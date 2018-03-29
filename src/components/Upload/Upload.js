@@ -12,7 +12,9 @@ export default class Upload extends Component {
           file: '',
           imageURL: '',
           coudinaryURL:'',
-          uploaded:''
+          uploaded:'',
+          error: ''
+
         };
 
         this.handleUploadImage = this.handleUploadImage.bind(this);
@@ -24,18 +26,24 @@ export default class Upload extends Component {
 
         const data = new FormData();
         data.append('file', this.state.file);
-
+        if(this.state.imageURL){
         this.setState({
             coudinaryURL: 'loading',
-            uploaded: 'working...'
+            uploaded: 'working...',
+            error: ''
         })
     
-        axios.post('http://localhost:4000/upload', data).then(response => {
+        axios.post('/upload', data).then(response => {
             this.setState({
                 coudinaryURL: response.data.secure_url,
                 uploaded: 'Finished!'
             })
         })
+        }else {
+            this.setState({
+                error: 'please select an image before uploading'
+            })
+        }
     } 
 
     onImageDrop(files) {
@@ -45,7 +53,8 @@ export default class Upload extends Component {
     let reader = new FileReader();
     reader.onloadend = () => {
         this.setState({
-            imageURL: reader.result
+            imageURL: reader.result,
+            error: ''
         });
         }
     
@@ -54,21 +63,23 @@ export default class Upload extends Component {
 
     render() {
 
+        const previewImg = this.state.imageURL ? <img src={this.state.imageURL} /> : '';
 
-        var myImage = this.state.coudinaryURL == 'loading' ? <img class='loader' src={loader} />  : this.state.coudinaryURL != 'loading' &&  this.state.coudinaryURL != '' ?<img src={this.state.coudinaryURL} /> : ''
+        const myImage = this.state.coudinaryURL == 'loading' ? <img class='loader' src={loader} />  : this.state.coudinaryURL != 'loading' &&  this.state.coudinaryURL != '' ?<img src={this.state.coudinaryURL} /> : ''
 
         return (
             <div className='upload-container'>
                 <div>
                     <div>
                         <div>
+                            {this.state.error}
                             <div>
                                 <h3>{this.state.uploaded}</h3>
                                 {myImage}
                             </div>
                             <div>
-                                <h3>Preview</h3>
-                                <img src={this.state.imageURL} />
+                                {previewImg ?  <h3>Preview</h3> : ''}
+                                {previewImg}
                             </div>
                         </div>
                         <Dropzone

@@ -8,12 +8,6 @@ module.exports = {
         }
 
         cloudinary.config(process.env.CLOUDINARY_URL);
-        // cloudinary.config({ 
-        //     cloud_name: 'devmountain', 
-        //     api_key: '496317639374845', 
-        //     api_secret: 'u2F-OfEOvqCAWavm-2lnWNlHR-8' 
-        //   });
-        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
         let sampleFile = req.files.file;
         console.log(sampleFile)
     
